@@ -20,6 +20,7 @@ public_users.post("/register", (req,res) => {
   } else {
     if ( isValid(username) ) {
         users.push({ username: username, password: password });
+        console.log(users);
         return res.status(200).json({message: "Added user:" + username});
     } else {
         return res.status(401).json({message: "Username is not valid"});
