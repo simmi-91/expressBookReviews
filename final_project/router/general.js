@@ -140,7 +140,8 @@ public_users.get('/books',function (req, res) {
     allBooks.then(() => console.log("task 10 - using promise"));
 });
 
-public_users.get('/books/:isbn',function (req, res) {
+//  Task 11 - search by isbn with promise
+public_users.get('/books/isbn/:isbn',function (req, res) {
     const isbnParam = req.params.isbn;
 
     const getBookByISBN = new Promise((resolve, reject) => {
@@ -161,17 +162,63 @@ public_users.get('/books/:isbn',function (req, res) {
             res.status(404).json({ message: err });
         });
 });
-/*public_users.get('/', async function (req, res) {
-    try {
-        const data = await promiseFunc((resolve) => {
-            const booklist = Object.values(books);
-            resolve(booklist);
-        },2000);
 
-        return res.status(200).json(data);
+//  Task 12 - search by author with promise
+public_users.get('/books/author/:author',function (req, res) {
+    const authorParam = req.params.author.toLowerCase();
+    
+    const getBookByauthor = new Promise((resolve, reject) => {
+        const matchingBooks = [];
+        for (let key in books) {
+            if (books[key].author.toLowerCase() === authorParam) {
+                matchingBooks.push({ isbn: key, ...books[key] });
+            }
+        }
 
-    } catch (error) {
-        return res.status(500).json({message: "Internal server error"});
-    }
-});*/
+        if (matchingBooks.length > 0) {
+            resolve(matchingBooks);
+        } else {
+            reject(`Books with author:'${authorParam}' not found`);
+        }
+    });
+
+    getBookByauthor
+        .then(book => {
+            res.json(book);
+            console.log("Task 12 - Search by author - Using Promises");
+        })
+        .catch(err => {
+            res.status(404).json({ message: err });
+        });
+});
+
+//  Task 13 - search by title with promise
+public_users.get('/books/title/:title',function (req, res) {
+    const titleParam = req.params.title.toLowerCase();
+    
+    const getBookByauthor = new Promise((resolve, reject) => {
+        const matchingBooks = [];
+        for (let key in books) {
+            if (books[key].title.toLowerCase() === titleParam) {
+                matchingBooks.push({ isbn: key, ...books[key] });
+            }
+        }
+
+        if (matchingBooks.length > 0) {
+            resolve(matchingBooks);
+        } else {
+            reject(`Books with title:'${titleParam}' not found`);
+        }
+    });
+
+    getBookByauthor
+        .then(book => {
+            res.json(book);
+            console.log("Task 12 - Search by title - Using Promises");
+        })
+        .catch(err => {
+            res.status(404).json({ message: err });
+        });
+});
+
 module.exports.general = public_users;
