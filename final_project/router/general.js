@@ -131,4 +131,47 @@ public_users.get('/review/:isbn',function (req, res) {
 
 });
 
+//  Task 10 - get books by promise
+public_users.get('/books',function (req, res) {
+    const allBooks = new Promise((resolve, reject) => {
+        resolve(res.send(JSON.stringify({books})));
+    });
+
+    allBooks.then(() => console.log("task 10 - using promise"));
+});
+
+public_users.get('/books/:isbn',function (req, res) {
+    const isbnParam = req.params.isbn;
+
+    const getBookByISBN = new Promise((resolve, reject) => {
+        const book = books[isbnParam];
+        if (book) {
+            resolve(book);
+        } else {
+            reject("Book not found");
+        }
+    });
+
+    getBookByISBN
+        .then(book => {
+            res.json(book);
+            console.log("Task 11 - Search by ISBN - Using Promises");
+        })
+        .catch(err => {
+            res.status(404).json({ message: err });
+        });
+});
+/*public_users.get('/', async function (req, res) {
+    try {
+        const data = await promiseFunc((resolve) => {
+            const booklist = Object.values(books);
+            resolve(booklist);
+        },2000);
+
+        return res.status(200).json(data);
+
+    } catch (error) {
+        return res.status(500).json({message: "Internal server error"});
+    }
+});*/
 module.exports.general = public_users;
